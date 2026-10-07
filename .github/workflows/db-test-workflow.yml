@@ -1,0 +1,36 @@
+name: Testes com Banco
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: usuario
+          POSTGRES_PASSWORD: senha
+          POSTGRES_DB: meu_banco
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Copiar código
+        uses: actions/checkout@v4
+
+      - name: Configurar ambiente e rodar testes
+        env:
+          DB_HOST: localhost
+          DB_USER: usuario
+          DB_PASSWORD: senha
+          DB_NAME: meu_banco
+        run: |
+          echo "Conectando ao banco de dados e rodando testes..."
+          # Adicione seus comandos de teste aqui (ex: npm test, pytest, etc.)
